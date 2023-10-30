@@ -40,6 +40,11 @@ void APlayerPawn::BeginPlay()
 	}
 }
 
+void APlayerPawn::Tick(float DeltaTime)
+{
+	TimeAfterLastAction += DeltaTime;
+}
+
 // Called to bind functionality to input
 void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -61,6 +66,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void APlayerPawn::Attack(UHealth* OtherHealth)
 {
 	OtherHealth->TakeDamage(PlayerStats.KnightAtkPower);
+	TimeAfterLastAction = 0;
 }
 
 void APlayerPawn::ProcessMoveUp(const FInputActionValue& Value)

@@ -44,7 +44,7 @@ void ABasePawn::Attack(UHealth* OtherHealth)
 
 bool ABasePawn::CanAct()
 {
-	return Mover->CanMove();
+	return TimeAfterLastAction >= DelayBetweenAction && Mover->CanMove();
 }
 
 void ABasePawn::PrepareCheckOnDirection(FVector Direction, float Modifier)

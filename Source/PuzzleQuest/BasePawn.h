@@ -52,6 +52,11 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UHealth* Health;
 
+	UPROPERTY(EditAnywhere)
+	float DelayBetweenAction{ 0.2f };
+
+	float TimeAfterLastAction;
+
 	bool CanAct();
 	void PrepareCheckOnDirection(FVector Direction, float Modifier);
 
