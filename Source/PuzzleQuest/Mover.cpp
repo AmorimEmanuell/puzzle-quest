@@ -2,6 +2,7 @@
 
 
 #include "Mover.h"
+#include <Kismet/KismetMathLibrary.h>
 
 // Sets default values for this component's properties
 UMover::UMover()
@@ -33,6 +34,11 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 		return;
 	}
 
+	ElapsedRotateDuration += DeltaTime;
+	float RotAlpha = FMath::Clamp(ElapsedRotateDuration / RotateDuration, 0, 1);
+	FRotator SetpRotation = FMath::Lerp(CurrentRotation, TargetRotation, RotAlpha);
+	MyOwner->SetActorRotation(SetpRotation);
+
 	ElapsedMovementDuration += DeltaTime;
 	float Alpha = FMath::Clamp(ElapsedMovementDuration / MovementDuration, 0, 1);
 	FVector StepLocation = FMath::Lerp(CurrentLocation, TargetLocation, Alpha);
@@ -53,7 +59,12 @@ void UMover::AttemptMove(FVector MoveDirection)
 
 	CurrentLocation = MyOwner->GetActorLocation();
 	TargetLocation = CurrentLocation + MoveDirection * MoveDistance;
+
+	CurrentRotation = MyOwner->GetActorRotation();
+	TargetRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
+
 	ElapsedMovementDuration = 0;
+	ElapsedRotateDuration = 0;
 
 	IsMoving = true;
 }

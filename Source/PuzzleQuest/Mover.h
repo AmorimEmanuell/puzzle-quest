@@ -31,13 +31,21 @@ private:
 	AActor* MyOwner;
 
 	bool IsMoving = false;
+
 	FVector CurrentLocation;
 	FVector TargetLocation;
 	float ElapsedMovementDuration;
+
+	FRotator CurrentRotation;
+	FRotator TargetRotation;
+	float ElapsedRotateDuration;
 
 	UPROPERTY(EditAnywhere)
 	float MoveDistance{ 100 };
 
 	UPROPERTY(EditAnywhere)
 	float MovementDuration{ 0.25f };
+
+	UPROPERTY(EditAnywhere)
+	float RotateDuration{ 0.1f };
 };

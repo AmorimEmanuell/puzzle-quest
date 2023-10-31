@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* BaseMesh;
 
+	UPROPERTY(EditDefaultsOnly)
+	UStaticMeshComponent* NoseIndicator;
+
 	UPROPERTY(VisibleAnywhere)
 	UMover* Mover;
 

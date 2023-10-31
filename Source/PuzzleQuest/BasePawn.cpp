@@ -20,6 +20,9 @@ ABasePawn::ABasePawn()
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	BaseMesh->SetupAttachment(BaseCollision);
 
+	NoseIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Nose Indicator"));
+	NoseIndicator->SetupAttachment(BaseMesh);
+
 	Mover = CreateDefaultSubobject<UMover>(TEXT("Mover"));
 	CellChecker = CreateDefaultSubobject<UCellChecker>(TEXT("CellChecker"));
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
