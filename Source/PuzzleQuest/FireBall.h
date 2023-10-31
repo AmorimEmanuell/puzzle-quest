@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "FireBall.generated.h"
 
+class UPrimitiveComponent;
+
 UCLASS()
 class PUZZLEQUEST_API AFireBall : public AActor
 {
@@ -34,7 +36,4 @@ private:
 
 	UFUNCTION()
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
