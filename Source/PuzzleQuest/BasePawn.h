@@ -40,7 +40,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* BaseCollision;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere)

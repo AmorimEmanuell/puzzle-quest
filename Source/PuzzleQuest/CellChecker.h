@@ -29,9 +29,6 @@ public:
 	void CheckCellOnDirection(FVector Direction, ABasePawn* Pawn);
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Collision")
-	TEnumAsByte<ECollisionChannel> TraceChannelProperty = ECC_Pawn;
-
 	UPROPERTY(EditAnywhere)
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 

@@ -49,13 +49,13 @@ private:
 	UPROPERTY(EditAnywhere)
 	FIntPoint PlayerStart{ 0, 0 };
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> WhiteFloorTile;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> BlackFloorTile;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> WallTile;
 
 	const float GridSnapValue{ 100 };

@@ -24,16 +24,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* BaseMesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* Barrel;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	USceneComponent* FireBallSpawnLocation;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AFireBall> FireBallBP;
 
 	UPROPERTY(EditAnywhere)
