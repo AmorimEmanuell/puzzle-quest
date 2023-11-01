@@ -11,13 +11,13 @@ struct FPlayerStats
 {
     GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 KnightAtkPower{ 1 };
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 KnightStamina{ 1 };
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	uint8 KnightMaxHealth{ 1 };
 
 	void SpendStamina()

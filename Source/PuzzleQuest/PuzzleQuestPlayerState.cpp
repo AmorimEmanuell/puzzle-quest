@@ -19,3 +19,21 @@ FPlayerStats& APuzzleQuestPlayerState::GetPlayerStats()
 {
 	return PlayerStats;
 }
+
+bool APuzzleQuestPlayerState::ConsumeStamina()
+{
+	if (PlayerStats.KnightStamina > 0)
+	{
+		PlayerStats.SpendStamina();
+		OnStatsChanged.Broadcast(PlayerStats);
+		return true;
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("NO STAMINA!"));
+	return false;
+}
+
+uint8 APuzzleQuestPlayerState::GetAttackPower()
+{
+	return PlayerStats.KnightAtkPower;
+}
