@@ -36,7 +36,6 @@ FVector2D AMapConstructor::GetGridPosition(int X, int Y)
 
 void AMapConstructor::ConstructFloorGrid(FIntPoint MapSize)
 {
-	UE_LOG(LogTemp, Error, TEXT("AMapConstructor::ConstructFloorGrid %s"), *(MapSize.ToString()));
 	bool bBeginWithWhite = true;
 	for (size_t i{ 0 }; i < MapSize.Y; i++)
 	{

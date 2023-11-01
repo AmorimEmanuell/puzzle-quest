@@ -36,7 +36,7 @@ void UHealth::TakeDamage(uint8 Damage)
 		return;
 	}
 
-	UE_LOG(LogTemp, Error, TEXT("%s TakeDamage: %d"), *GetOwner()->GetName(), Damage);
+	UE_LOG(LogTemp, Display, TEXT("%s TakeDamage: %d"), *GetOwner()->GetName(), Damage);
 	CurrentHealth -= Damage;
 
 	if (CurrentHealth <= 0)

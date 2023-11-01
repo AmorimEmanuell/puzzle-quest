@@ -12,11 +12,11 @@ void UPuzzleQuestGameInstance::OnStart()
     if (SaveData = Cast<USaveData>(UGameplayStatics::LoadGameFromSlot("Default", 0)))
     {
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
-        UE_LOG(LogTemp, Warning, TEXT("LOADED SAVE DATA: KnightAtkPower: %d, KnightStamina: %d, KnightMaxHealth: %d"), SaveData->PlayerStats.KnightAtkPower, SaveData->PlayerStats.KnightStamina, SaveData->PlayerStats.KnightMaxHealth);
+        UE_LOG(LogTemp, Display, TEXT("LOADED SAVE DATA: KnightAtkPower: %d, KnightStamina: %d, KnightMaxHealth: %d"), SaveData->PlayerStats.KnightAtkPower, SaveData->PlayerStats.KnightStamina, SaveData->PlayerStats.KnightMaxHealth);
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("NO SAVE DATA FOUND. CREATING..."));
+        UE_LOG(LogTemp, Warning, TEXT("NO SAVE DATA FOUND. CREATING..."));
 
         SaveData = Cast<USaveData>(UGameplayStatics::CreateSaveGameObject(USaveData::StaticClass()));
         if (SaveData)
@@ -24,8 +24,12 @@ void UPuzzleQuestGameInstance::OnStart()
             if (UGameplayStatics::SaveGameToSlot(SaveData, "Default", 0))
             {
                 // Save succeeded.
-                UE_LOG(LogTemp, Error, TEXT("SAVE DATA CREATED SUCCESSFULLY"));
+                UE_LOG(LogTemp, Display, TEXT("SAVE DATA CREATED SUCCESSFULLY!"));
             }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("UNABLE TO CREATE SAVE DATA!"));
         }
     }
 }
