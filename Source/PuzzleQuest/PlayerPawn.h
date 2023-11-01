@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BasePawn.h"
-#include "SaveData.h"
 #include "PlayerPawn.generated.h"
 
 class UInputMappingContext;
@@ -55,6 +54,4 @@ private:
 
 	void ProcessMoveUp(const FInputActionValue& Value);
 	void ProcessMoveRight(const FInputActionValue& Value);
-
-	FPlayerStats PlayerStats;
 };

@@ -7,10 +7,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "CellChecker.h"
-#include <Kismet/GameplayStatics.h>
-#include "PuzzleQuestGameInstance.h"
 #include "SaveData.h"
 #include "Health.h"
+#include "PuzzleQuestPlayerState.h"
 
 APlayerPawn::APlayerPawn()
 {
@@ -32,11 +31,6 @@ void APlayerPawn::BeginPlay()
 		{
 			Subsystem->AddMappingContext(MainInputMappingContext, 0);
 		}
-	}
-
-	if (UPuzzleQuestGameInstance* GameInstance = Cast<UPuzzleQuestGameInstance>(UGameplayStatics::GetGameInstance(this)))
-	{
-		PlayerStats = GameInstance->GetPlayerStats();
 	}
 }
 
@@ -65,7 +59,8 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerPawn::Attack(UHealth* OtherHealth)
 {
-	OtherHealth->TakeDamage(PlayerStats.KnightAtkPower);
+	APuzzleQuestPlayerState* MyPlayerState = Cast<APuzzleQuestPlayerState>(GetPlayerState());
+	OtherHealth->TakeDamage(MyPlayerState->GetPlayerStats().KnightAtkPower);
 	TimeAfterLastAction = 0;
 }
 
