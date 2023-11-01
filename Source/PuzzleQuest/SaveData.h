@@ -19,6 +19,11 @@ struct FPlayerStats
 
 	UPROPERTY(VisibleAnywhere)
 	uint8 KnightMaxHealth{ 1 };
+
+	void SpendStamina()
+	{
+		KnightStamina--;
+	}
 };
 
 /**

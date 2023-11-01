@@ -60,8 +60,18 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void APlayerPawn::Attack(UHealth* OtherHealth)
 {
 	APuzzleQuestPlayerState* MyPlayerState = Cast<APuzzleQuestPlayerState>(GetPlayerState());
-	OtherHealth->TakeDamage(MyPlayerState->GetPlayerStats().KnightAtkPower);
-	TimeAfterLastAction = 0;
+	FPlayerStats& CurrentStats = MyPlayerState->GetPlayerStats();
+	if (CurrentStats.KnightStamina > 0)
+	{
+		OtherHealth->TakeDamage(CurrentStats.KnightAtkPower);
+		TimeAfterLastAction = 0;
+
+		CurrentStats.SpendStamina();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("NO STAMINA!"));
+	}
 }
 
 void APlayerPawn::ProcessMoveUp(const FInputActionValue& Value)
