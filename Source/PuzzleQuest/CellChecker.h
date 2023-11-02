@@ -33,5 +33,8 @@ private:
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 
 	UPROPERTY(EditAnywhere)
-	float CheckDistance{ 50 };
+	float CheckDistance{ 100 };
+
+	UPROPERTY(EditAnywhere)
+	float HeightCheck{ 25 };
 };

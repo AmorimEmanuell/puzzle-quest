@@ -40,7 +40,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	FVector2D GetGridPosition(int X, int Y);
+	FVector GetGridPosition(int X, int Y);
 
 private:
 	UPROPERTY(EditAnywhere)

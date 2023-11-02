@@ -36,7 +36,7 @@ void UCellChecker::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 void UCellChecker::CheckCellOnDirection(FVector Direction, ABasePawn* Pawn)
 {
 	FHitResult Hit;
-	FVector TraceStart = GetOwner()->GetActorLocation();
+	FVector TraceStart = GetOwner()->GetActorLocation() + FVector::UpVector * HeightCheck;
 	FVector TraceEnd = TraceStart + Direction * CheckDistance;
 
 	FCollisionQueryParams CollisionQueryParams;

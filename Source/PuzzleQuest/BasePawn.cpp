@@ -14,14 +14,14 @@ ABasePawn::ABasePawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	BaseCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Base Collision"));
-	RootComponent = BaseCollision;
-
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
-	BaseMesh->SetupAttachment(BaseCollision);
+	RootComponent = BaseMesh;
 
 	NoseIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Nose Indicator"));
 	NoseIndicator->SetupAttachment(BaseMesh);
+
+	BaseCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Base Collision"));
+	BaseCollision->SetupAttachment(RootComponent);
 
 	Mover = CreateDefaultSubobject<UMover>(TEXT("Mover"));
 	CellChecker = CreateDefaultSubobject<UCellChecker>(TEXT("CellChecker"));

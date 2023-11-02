@@ -29,9 +29,9 @@ void AMapConstructor::Tick(float DeltaTime)
 
 }
 
-FVector2D AMapConstructor::GetGridPosition(int X, int Y)
+FVector AMapConstructor::GetGridPosition(int X, int Y)
 {
-	return FVector2D{ X * GridSnapValue, Y * GridSnapValue };
+	return FVector{ X * GridSnapValue, Y * GridSnapValue, 0 };
 }
 
 void AMapConstructor::ConstructFloorGrid(FIntPoint MapSize)
@@ -95,7 +95,7 @@ void AMapConstructor::ConstructOuterWall(FIntPoint MapSize)
 
 AStaticMeshActor* AMapConstructor::SpawnMapActor(TSubclassOf<AStaticMeshActor> ActorBP, int X, int Y)
 {
-	FVector ActorLocation{ GetGridPosition(X, Y), 0 };
+	FVector ActorLocation = GetGridPosition(X, Y);
 	AStaticMeshActor* Actor = GetWorld()->SpawnActor<AStaticMeshActor>(ActorBP, ActorLocation, GetActorRotation());
 	return Actor;
 }
@@ -104,6 +104,6 @@ void AMapConstructor::PlacePlayerOnStartPosition(FIntPoint StartPosition)
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	FVector PlayerLocation = PlayerPawn->GetActorLocation();
-	PlayerLocation = FVector{ GetGridPosition(StartPosition.X, StartPosition.Y), PlayerLocation.Z };
+	PlayerLocation = GetGridPosition(StartPosition.X, StartPosition.Y);
 	PlayerPawn->SetActorLocation(PlayerLocation);
 }
