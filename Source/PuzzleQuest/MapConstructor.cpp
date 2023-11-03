@@ -4,6 +4,7 @@
 #include "MapConstructor.h"
 #include <Engine/StaticMeshActor.h>
 #include <Kismet/GameplayStatics.h>
+#include "EnemyPawn.h"
 
 // Sets default values
 AMapConstructor::AMapConstructor()
@@ -20,13 +21,13 @@ void AMapConstructor::BeginPlay()
 	ConstructFloorGrid(DefaultMapSize);
 	ConstructOuterWall(DefaultMapSize);
 	PlacePlayerOnStartPosition(PlayerStart);
+	SpawnEnemies(InitialEnemiesLocations);
 }
 
 // Called every frame
 void AMapConstructor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 FVector AMapConstructor::GetGridPosition(int X, int Y)
@@ -91,6 +92,16 @@ void AMapConstructor::ConstructOuterWall(FIntPoint MapSize)
 	WallNorthEastCorner->SetFolderPath("/LevelLayout/OuterWalls/Corners");
 	WallNorthWestCorner->SetFolderPath("/LevelLayout/OuterWalls/Corners");
 #endif
+}
+
+void AMapConstructor::SpawnEnemies(TArray<FIntPoint> EnemiesLocations)
+{
+	for (FIntPoint EnemyLocation : EnemiesLocations)
+	{
+		FVector ActorLocation = GetGridPosition(EnemyLocation.X, EnemyLocation.Y);
+		UE_LOG(LogTemp, Error, TEXT("AMapConstructor::SpawnEnemies %s"), *ActorLocation.ToString());
+		GetWorld()->SpawnActor<AEnemyPawn>(EnemyPawn, ActorLocation, GetActorRotation());
+	}
 }
 
 AStaticMeshActor* AMapConstructor::SpawnMapActor(TSubclassOf<AStaticMeshActor> ActorBP, int X, int Y)

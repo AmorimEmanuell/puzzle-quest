@@ -8,6 +8,7 @@
 
 class UStaticMesh;
 class AStaticMeshActor;
+class AEnemyPawn;
 
 USTRUCT(BlueprintType)
 struct FStaticMeshActorArray
@@ -50,6 +51,9 @@ private:
 	FIntPoint PlayerStart{ 0, 0 };
 
 	UPROPERTY(EditDefaultsOnly)
+	TArray<FIntPoint> InitialEnemiesLocations;
+
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> WhiteFloorTile;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -58,12 +62,15 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AStaticMeshActor> WallTile;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AEnemyPawn> EnemyPawn;
+
 	const float GridSnapValue{ 100 };
 
 private:
 	void ConstructFloorGrid(FIntPoint MapSize);
 	void ConstructOuterWall(FIntPoint MapSize);
+	void SpawnEnemies(TArray<FIntPoint> EnemiesLocations);
 	AStaticMeshActor* SpawnMapActor(TSubclassOf<AStaticMeshActor> ActorBP, int X, int Y);
-
 	void PlacePlayerOnStartPosition(FIntPoint StartPosition);
 };
