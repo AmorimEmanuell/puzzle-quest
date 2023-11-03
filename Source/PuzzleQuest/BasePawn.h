@@ -10,6 +10,8 @@ class UCapsuleComponent;
 class UMover;
 class UCellChecker;
 class UHealth;
+class UPawnRotatorComponent;
+class UPawnMoverComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -32,7 +34,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Move(FVector MoveDirection);
+	void MoveIn(FVector MoveDirection);
+	void RotateTo(FVector RotateDirection);
 
 	virtual void Attack(UHealth* OtherHealth);
 
@@ -47,13 +50,16 @@ protected:
 	UStaticMeshComponent* NoseIndicator;
 
 	UPROPERTY(VisibleAnywhere)
-	UMover* Mover;
+	TObjectPtr<UPawnMoverComponent> PawnMover;
 
 	UPROPERTY(VisibleAnywhere)
 	UCellChecker* CellChecker;
 
 	UPROPERTY(VisibleAnywhere)
 	UHealth* Health;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPawnRotatorComponent> PawnRotator;
 
 	UPROPERTY(EditAnywhere)
 	float DelayBetweenAction{ 0.2f };

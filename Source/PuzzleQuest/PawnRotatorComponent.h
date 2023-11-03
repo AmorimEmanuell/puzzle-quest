@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Mover.generated.h"
+#include "PawnRotatorComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PUZZLEQUEST_API UMover : public UActorComponent
+class PUZZLEQUEST_API UPawnRotatorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UMover();
+	UPawnRotatorComponent();
 
 protected:
 	// Called when the game starts
@@ -24,28 +24,15 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void AttemptMove(FVector MoveDirection);
-	bool CanMove();
+	void RotateTo(FVector Direction);
 
 private:
-	AActor* MyOwner;
-
-	bool IsMoving = false;
-
-	FVector CurrentLocation;
-	FVector TargetLocation;
-	float ElapsedMovementDuration;
-
-	FRotator CurrentRotation;
-	FRotator TargetRotation;
-	float ElapsedRotateDuration;
-
-	UPROPERTY(EditAnywhere)
-	float MoveDistance{ 100 };
-
-	UPROPERTY(EditAnywhere)
-	float MovementDuration{ 0.25f };
-
 	UPROPERTY(EditAnywhere)
 	float RotateDuration{ 0.1f };
+
+	AActor* MyOwner;
+	bool bIsRotating = false;
+	FRotator CurrentRotation;
+	FRotator TargetRotation;
+	float ElapsedDuration;
 };

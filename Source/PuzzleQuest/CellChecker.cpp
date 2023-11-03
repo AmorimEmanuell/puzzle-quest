@@ -59,6 +59,7 @@ void UCellChecker::CheckCellOnDirection(FVector Direction, ABasePawn* Pawn)
 	}
 	else
 	{
-		Pawn->Move(Direction);
+		Pawn->MoveIn(Direction);
+		Pawn->RotateTo(Direction);
 	}
 }

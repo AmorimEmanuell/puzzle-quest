@@ -4,9 +4,10 @@
 #include "BasePawn.h"
 #include <EnhancedInputComponent.h>
 #include <Components/CapsuleComponent.h>
-#include "Mover.h"
 #include "CellChecker.h"
 #include "Health.h"
+#include "PawnRotatorComponent.h"
+#include "PawnMoverComponent.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -23,9 +24,10 @@ ABasePawn::ABasePawn()
 	BaseCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Base Collision"));
 	BaseCollision->SetupAttachment(RootComponent);
 
-	Mover = CreateDefaultSubobject<UMover>(TEXT("Mover"));
 	CellChecker = CreateDefaultSubobject<UCellChecker>(TEXT("CellChecker"));
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
+	PawnRotator = CreateDefaultSubobject<UPawnRotatorComponent>(TEXT("PawnRotator"));
+	PawnMover = CreateDefaultSubobject<UPawnMoverComponent>(TEXT("PawnMover"));
 }
 
 // Called when the game starts or when spawned
@@ -35,9 +37,14 @@ void ABasePawn::BeginPlay()
 	Health->OnHealthDepleted.BindUObject(this, &ABasePawn::Die);
 }
 
-void ABasePawn::Move(FVector MoveDirection)
+void ABasePawn::MoveIn(FVector MoveDirection)
 {
-	Mover->AttemptMove(MoveDirection);
+	PawnMover->AttemptMove(MoveDirection);
+}
+
+void ABasePawn::RotateTo(FVector RotateDirection)
+{
+	PawnRotator->RotateTo(RotateDirection);
 }
 
 void ABasePawn::Attack(UHealth* OtherHealth)
@@ -47,7 +54,7 @@ void ABasePawn::Attack(UHealth* OtherHealth)
 
 bool ABasePawn::CanAct()
 {
-	return TimeAfterLastAction >= DelayBetweenAction && Mover->CanMove();
+	return TimeAfterLastAction >= DelayBetweenAction && PawnMover->CanMove();
 }
 
 void ABasePawn::PrepareCheckOnDirection(FVector Direction, float Modifier)
@@ -76,4 +83,3 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
