@@ -15,5 +15,6 @@ class PUZZLEQUEST_API AEnemyPawn : public ABasePawn, public IInteractable
 {
 	GENERATED_BODY()
 
+public:
 	virtual void OnInteract(ABasePawn* Pawn) override;
 };

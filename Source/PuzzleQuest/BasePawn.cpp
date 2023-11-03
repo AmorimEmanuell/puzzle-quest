@@ -8,6 +8,7 @@
 #include "Health.h"
 #include "PawnRotatorComponent.h"
 #include "PawnMoverComponent.h"
+#include "Interactable.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -57,13 +58,17 @@ bool ABasePawn::CanAct()
 	return TimeAfterLastAction >= DelayBetweenAction && PawnMover->CanMove();
 }
 
-void ABasePawn::PrepareCheckOnDirection(FVector Direction, float Modifier)
+AActor* ABasePawn::CheckCellOnDirection(FVector Direction)
+{
+	return CellChecker->CheckCellOnDirection(Direction);
+}
+
+FVector ABasePawn::GetCheckDirection(FVector Direction, float Modifier) const
 {
 	Direction.Z = 0;
 	Direction *= Modifier;
 	Direction.Normalize();
-
-	CellChecker->CheckCellOnDirection(Direction, this);
+	return Direction;
 }
 
 void ABasePawn::Die()

@@ -99,7 +99,6 @@ void AMapConstructor::SpawnEnemies(TArray<FIntPoint> EnemiesLocations)
 	for (FIntPoint EnemyLocation : EnemiesLocations)
 	{
 		FVector ActorLocation = GetGridPosition(EnemyLocation.X, EnemyLocation.Y);
-		UE_LOG(LogTemp, Error, TEXT("AMapConstructor::SpawnEnemies %s"), *ActorLocation.ToString());
 		GetWorld()->SpawnActor<AEnemyPawn>(EnemyPawn, ActorLocation, GetActorRotation());
 	}
 }

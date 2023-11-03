@@ -4,7 +4,6 @@
 #include "CellChecker.h"
 #include "BasePawn.h"
 #include "Health.h"
-#include "Interactable.h"
 
 // Sets default values for this component's properties
 UCellChecker::UCellChecker()
@@ -12,28 +11,15 @@ UCellChecker::UCellChecker()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
 }
 
 // Called when the game starts
 void UCellChecker::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
-// Called every frame
-void UCellChecker::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-void UCellChecker::CheckCellOnDirection(FVector Direction, ABasePawn* Pawn)
+AActor* UCellChecker::CheckCellOnDirection(FVector Direction)
 {
 	FHitResult Hit;
 	FVector TraceStart = GetOwner()->GetActorLocation() + FVector::UpVector * HeightCheck;
@@ -52,14 +38,8 @@ void UCellChecker::CheckCellOnDirection(FVector Direction, ABasePawn* Pawn)
 	// and its fields will be filled with detailed info about what was hit
 	if (Hit.bBlockingHit && IsValid(Hit.GetActor()))
 	{
-		if (IInteractable* Interactable = Cast<IInteractable>(Hit.GetActor()))
-		{
-			Interactable->OnInteract(Pawn);
-		}
+		return Hit.GetActor();
 	}
-	else
-	{
-		Pawn->MoveIn(Direction);
-		Pawn->RotateTo(Direction);
-	}
+
+	return nullptr;
 }

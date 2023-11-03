@@ -76,7 +76,8 @@ void APlayerPawn::ProcessMoveUp(const FInputActionValue& Value)
 
 	float MoveDirection = Value.Get<float>();
 	FVector CameraForward = Camera->GetForwardVector();
-	PrepareCheckOnDirection(CameraForward, MoveDirection);
+	FVector CheckDirection = GetCheckDirection(CameraForward, MoveDirection);
+	ProcessNextAction(CheckCellOnDirection(CheckDirection), CheckDirection);
 }
 
 void APlayerPawn::ProcessMoveRight(const FInputActionValue& Value)
@@ -88,5 +89,22 @@ void APlayerPawn::ProcessMoveRight(const FInputActionValue& Value)
 
 	float MoveDirection = Value.Get<float>();
 	FVector CameraRight = Camera->GetRightVector();
-	PrepareCheckOnDirection(CameraRight, MoveDirection);
+	FVector CheckDirection = GetCheckDirection(CameraRight, MoveDirection);
+	ProcessNextAction(CheckCellOnDirection(CheckDirection), CheckDirection);
+}
+
+void APlayerPawn::ProcessNextAction(AActor* HitActor, FVector Direction)
+{
+	if (HitActor == nullptr)
+	{
+		MoveIn(Direction);
+		RotateTo(Direction);
+	}
+	else
+	{
+		if (IInteractable* Interactable = Cast<IInteractable>(HitActor))
+		{
+			Interactable->OnInteract(this);
+		}
+	}
 }

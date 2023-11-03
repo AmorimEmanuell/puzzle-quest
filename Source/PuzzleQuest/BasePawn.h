@@ -38,6 +38,7 @@ public:
 	void RotateTo(FVector RotateDirection);
 
 	virtual void Attack(UHealth* OtherHealth);
+	AActor* CheckCellOnDirection(FVector Direction);
 
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -67,7 +68,7 @@ protected:
 	float TimeAfterLastAction;
 
 	bool CanAct();
-	void PrepareCheckOnDirection(FVector Direction, float Modifier);
+	FVector GetCheckDirection(FVector Direction, float Modifier = 1) const;
 
 public:
 	UFUNCTION()

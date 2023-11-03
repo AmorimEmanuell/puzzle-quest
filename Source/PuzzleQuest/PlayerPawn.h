@@ -54,4 +54,5 @@ private:
 
 	void ProcessMoveUp(const FInputActionValue& Value);
 	void ProcessMoveRight(const FInputActionValue& Value);
+	void ProcessNextAction(AActor* HitActor, FVector Direction);
 };
