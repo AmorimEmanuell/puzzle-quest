@@ -7,3 +7,13 @@ void AEnemyPawn::OnInteract(ABasePawn* Pawn)
 {
 	Pawn->Attack(Health);
 }
+
+FIntPoint AEnemyPawn::GetPatrolLocation() const
+{
+	return StartGridLocation;
+}
+
+int32 AEnemyPawn::GetPatrolRange() const
+{
+	return PatrolRange;
+}

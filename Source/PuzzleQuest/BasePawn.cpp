@@ -41,6 +41,7 @@ void ABasePawn::BeginPlay()
 void ABasePawn::MoveIn(FVector MoveDirection)
 {
 	PawnMover->AttemptMove(MoveDirection);
+	UpdateGridLocation(FIntPoint{ CurrentGridLocation.X + (int32)MoveDirection.X, CurrentGridLocation.Y + (int32)MoveDirection.Y });
 }
 
 void ABasePawn::RotateTo(FVector RotateDirection)
@@ -77,7 +78,12 @@ void ABasePawn::SetupGridLocation(FIntPoint GridLocation)
 	CurrentGridLocation = GridLocation;
 }
 
-FIntPoint ABasePawn::GetGridLocation()
+void ABasePawn::UpdateGridLocation(FIntPoint GridLocation)
+{
+	CurrentGridLocation = GridLocation;
+}
+
+FIntPoint ABasePawn::GetGridLocation() const
 {
 	return CurrentGridLocation;
 }

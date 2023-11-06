@@ -17,4 +17,10 @@ class PUZZLEQUEST_API AEnemyPawn : public ABasePawn, public IInteractable
 
 public:
 	virtual void OnInteract(ABasePawn* Pawn) override;
+	FIntPoint GetPatrolLocation() const;
+	int32 GetPatrolRange() const;
+
+private:
+	UPROPERTY(EditAnywhere)
+	int32 PatrolRange{ 3 };
 };

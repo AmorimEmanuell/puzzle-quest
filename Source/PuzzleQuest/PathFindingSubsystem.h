@@ -37,7 +37,6 @@ class PUZZLEQUEST_API UPathFindingSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	void SetMapData(TMap<FIntPoint, bool> MapData);
 	TArray<FIntPoint> FindPath(FIntPoint Start, FIntPoint Target);
 
 private:
@@ -49,7 +48,6 @@ private:
 	TArray<FIntPoint> AnalysedTilesIndexes;
 	TMap<FIntPoint, FPathFindingData> PathFindingData;
 	TArray<FPathFindingData> CurrentNeighbors;
-
 	FPathFindingData CurrentNeighbor;
 
 	bool IsInputValid(FIntPoint Start, FIntPoint Target);

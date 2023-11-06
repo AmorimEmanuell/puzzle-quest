@@ -4,15 +4,13 @@
 #include "MapConstructor.h"
 #include <Engine/StaticMeshActor.h>
 #include <Kismet/GameplayStatics.h>
+#include "BasePawn.h"
 #include "EnemyPawn.h"
 #include "MapDefaultsSubSystem.h"
-#include "PathFindingSubsystem.h"
 
 // Sets default values
 AMapConstructor::AMapConstructor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	//PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -27,14 +25,8 @@ void AMapConstructor::BeginPlay()
 	PlacePlayerOnStartPosition(PlayerStart);
 	SpawnEnemies(InitialEnemiesLocations);
 
-	UPathFindingSubsystem* PathFinding = GetWorld()->GetGameInstance()->GetSubsystem<UPathFindingSubsystem>();
-	PathFinding->SetMapData(MapData);
-}
-
-// Called every frame
-void AMapConstructor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	MapDefaultsSubsytem->SetMapData(MapData);
+	MapDefaultsSubsytem->SetCurrentMapSize(DefaultMapSize);
 }
 
 void AMapConstructor::ConstructFloorGrid(FIntPoint MapSize)
@@ -102,7 +94,7 @@ void AMapConstructor::SpawnEnemies(TArray<FIntPoint> EnemiesLocations)
 	for (FIntPoint EnemyLocation : EnemiesLocations)
 	{
 		FVector ActorLocation = MapDefaultsSubsytem->GetGridPosition(EnemyLocation.X, EnemyLocation.Y);
-		AEnemyPawn* EnemyPawn = GetWorld()->SpawnActor<AEnemyPawn>(EnemyPawnBP, ActorLocation, GetActorRotation());
+		TObjectPtr<AEnemyPawn> EnemyPawn = GetWorld()->SpawnActor<AEnemyPawn>(EnemyPawnBP, ActorLocation, GetActorRotation());
 		EnemyPawn->SetupGridLocation(EnemyLocation);
 	}
 }
@@ -116,8 +108,8 @@ AStaticMeshActor* AMapConstructor::SpawnMapActor(TSubclassOf<AStaticMeshActor> A
 
 void AMapConstructor::PlacePlayerOnStartPosition(FIntPoint StartPosition)
 {
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	FVector PlayerLocation = PlayerPawn->GetActorLocation();
-	PlayerLocation = MapDefaultsSubsytem->GetGridPosition(StartPosition.X, StartPosition.Y);
+	TObjectPtr<ABasePawn> PlayerPawn = Cast<ABasePawn>(UGameplayStatics::GetPlayerPawn(this, 0));
+	FVector PlayerLocation = MapDefaultsSubsytem->GetGridPosition(StartPosition.X, StartPosition.Y);
 	PlayerPawn->SetActorLocation(PlayerLocation);
+	PlayerPawn->SetupGridLocation(StartPosition);
 }

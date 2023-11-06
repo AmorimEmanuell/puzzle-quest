@@ -25,16 +25,10 @@ private:
 	FVector2D ThinkingDelayRange{ 2.0f, 4.0f };
 
 	FTimerHandle PatrolTimeHandle;
-	TArray<FVector> CheckDirections
-	{
-		FVector::RightVector,
-		FVector::LeftVector,
-		FVector::ForwardVector,
-		FVector::BackwardVector
-	};
-
-	TArray<FVector> AvailableDirections;
+	TArray<FIntPoint> CurrentPath;
 
 	void DecideNextLocation();
 	float GetThinkingDelay() { return FMath::RandRange(ThinkingDelayRange.X, ThinkingDelayRange.Y); };
+	FIntPoint CalculateTargetLocation(FIntPoint PatrolLocation, int32 PatrolRange, FIntPoint MapSize) const;
+	void MoveToNextLocationOnPath();
 };

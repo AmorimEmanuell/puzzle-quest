@@ -2,15 +2,13 @@
 
 
 #include "PathFindingSubsystem.h"
-#include <Algo/Reverse.h>
-
-void UPathFindingSubsystem::SetMapData(TMap<FIntPoint, bool> MapData)
-{
-	CurrentMapData = MapData;
-}
+#include "MapDefaultsSubSystem.h"
 
 TArray<FIntPoint> UPathFindingSubsystem::FindPath(FIntPoint Start, FIntPoint Target)
 {
+	TObjectPtr<UMapDefaultsSubSystem> MapDefaultsSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UMapDefaultsSubSystem>();
+	CurrentMapData = MapDefaultsSubsystem->GetMapData();
+
 	StartIndex = Start;
 	TargetIndex = Target;
 
