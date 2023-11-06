@@ -71,6 +71,17 @@ FVector ABasePawn::GetCheckDirection(FVector Direction, float Modifier) const
 	return Direction;
 }
 
+void ABasePawn::SetupGridLocation(FIntPoint GridLocation)
+{
+	StartGridLocation = GridLocation;
+	CurrentGridLocation = GridLocation;
+}
+
+FIntPoint ABasePawn::GetGridLocation()
+{
+	return CurrentGridLocation;
+}
+
 void ABasePawn::Die()
 {
 	UE_LOG(LogTemp, Error, TEXT("%s Died"), *GetName());

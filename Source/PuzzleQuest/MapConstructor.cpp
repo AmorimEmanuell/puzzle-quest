@@ -5,6 +5,8 @@
 #include <Engine/StaticMeshActor.h>
 #include <Kismet/GameplayStatics.h>
 #include "EnemyPawn.h"
+#include "MapDefaultsSubSystem.h"
+#include "PathFindingSubsystem.h"
 
 // Sets default values
 AMapConstructor::AMapConstructor()
@@ -18,10 +20,15 @@ void AMapConstructor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MapDefaultsSubsytem = GetWorld()->GetGameInstance()->GetSubsystem<UMapDefaultsSubSystem>();
+
 	ConstructFloorGrid(DefaultMapSize);
 	ConstructOuterWall(DefaultMapSize);
 	PlacePlayerOnStartPosition(PlayerStart);
 	SpawnEnemies(InitialEnemiesLocations);
+
+	UPathFindingSubsystem* PathFinding = GetWorld()->GetGameInstance()->GetSubsystem<UPathFindingSubsystem>();
+	PathFinding->SetMapData(MapData);
 }
 
 // Called every frame
@@ -30,20 +37,16 @@ void AMapConstructor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-FVector AMapConstructor::GetGridPosition(int X, int Y)
-{
-	return FVector{ X * GridSnapValue, Y * GridSnapValue, 0 };
-}
-
 void AMapConstructor::ConstructFloorGrid(FIntPoint MapSize)
 {
 	bool bBeginWithWhite = true;
-	for (size_t i{ 0 }; i < MapSize.Y; i++)
+	for (int32 i{ 0 }; i < MapSize.Y; i++)
 	{
 		bool bSwapTile = bBeginWithWhite;
-		for (size_t j{ 0 }; j < MapSize.X; j++)
+		for (int32 j{ 0 }; j < MapSize.X; j++)
 		{
-			AStaticMeshActor* Tile = SpawnMapActor(bSwapTile ? BlackFloorTile : WhiteFloorTile, j, i);
+			AStaticMeshActor* Tile = SpawnMapActor(bSwapTile ? BlackFloorTileBP : WhiteFloorTileBP, j, i);
+			MapData.Add({ j, i }, true);
 
 #if WITH_EDITOR
 			FString Path = FString::Printf(TEXT("/LevelLayout/FloorTiles/Row%d"), i);
@@ -61,8 +64,8 @@ void AMapConstructor::ConstructOuterWall(FIntPoint MapSize)
 {
 	for (size_t i{ 0 }; i < MapSize.X; i++)
 	{
-		AStaticMeshActor* WallSouth = SpawnMapActor(WallTile, i, -1);
-		AStaticMeshActor* WallNorth = SpawnMapActor(WallTile, i, MapSize.Y);
+		AStaticMeshActor* WallSouth = SpawnMapActor(WallTileBP, i, -1);
+		AStaticMeshActor* WallNorth = SpawnMapActor(WallTileBP, i, MapSize.Y);
 
 #if WITH_EDITOR
 		WallSouth->SetFolderPath("/LevelLayout/OuterWalls/South");
@@ -72,8 +75,8 @@ void AMapConstructor::ConstructOuterWall(FIntPoint MapSize)
 
 	for (size_t i{ 0 }; i < MapSize.Y; i++)
 	{
-		AStaticMeshActor* WallEast = SpawnMapActor(WallTile, -1, i);
-		AStaticMeshActor* WallWest = SpawnMapActor(WallTile, MapSize.X, i);
+		AStaticMeshActor* WallEast = SpawnMapActor(WallTileBP, -1, i);
+		AStaticMeshActor* WallWest = SpawnMapActor(WallTileBP, MapSize.X, i);
 
 #if WITH_EDITOR
 		WallEast->SetFolderPath("/LevelLayout/OuterWalls/East");
@@ -81,10 +84,10 @@ void AMapConstructor::ConstructOuterWall(FIntPoint MapSize)
 #endif
 	}
 
-	AStaticMeshActor* WallSouthEastCorner = SpawnMapActor(WallTile, -1, -1);
-	AStaticMeshActor* WallSouthWestCorner = SpawnMapActor(WallTile, MapSize.X, -1);
-	AStaticMeshActor* WallNorthEastCorner = SpawnMapActor(WallTile, -1, MapSize.Y);
-	AStaticMeshActor* WallNorthWestCorner = SpawnMapActor(WallTile, MapSize.X, MapSize.Y);
+	AStaticMeshActor* WallSouthEastCorner = SpawnMapActor(WallTileBP, -1, -1);
+	AStaticMeshActor* WallSouthWestCorner = SpawnMapActor(WallTileBP, MapSize.X, -1);
+	AStaticMeshActor* WallNorthEastCorner = SpawnMapActor(WallTileBP, -1, MapSize.Y);
+	AStaticMeshActor* WallNorthWestCorner = SpawnMapActor(WallTileBP, MapSize.X, MapSize.Y);
 
 #if WITH_EDITOR
 	WallSouthEastCorner->SetFolderPath("/LevelLayout/OuterWalls/Corners");
@@ -98,14 +101,15 @@ void AMapConstructor::SpawnEnemies(TArray<FIntPoint> EnemiesLocations)
 {
 	for (FIntPoint EnemyLocation : EnemiesLocations)
 	{
-		FVector ActorLocation = GetGridPosition(EnemyLocation.X, EnemyLocation.Y);
-		GetWorld()->SpawnActor<AEnemyPawn>(EnemyPawn, ActorLocation, GetActorRotation());
+		FVector ActorLocation = MapDefaultsSubsytem->GetGridPosition(EnemyLocation.X, EnemyLocation.Y);
+		AEnemyPawn* EnemyPawn = GetWorld()->SpawnActor<AEnemyPawn>(EnemyPawnBP, ActorLocation, GetActorRotation());
+		EnemyPawn->SetupGridLocation(EnemyLocation);
 	}
 }
 
 AStaticMeshActor* AMapConstructor::SpawnMapActor(TSubclassOf<AStaticMeshActor> ActorBP, int X, int Y)
 {
-	FVector ActorLocation = GetGridPosition(X, Y);
+	FVector ActorLocation = MapDefaultsSubsytem->GetGridPosition(X, Y);
 	AStaticMeshActor* Actor = GetWorld()->SpawnActor<AStaticMeshActor>(ActorBP, ActorLocation, GetActorRotation());
 	return Actor;
 }
@@ -114,6 +118,6 @@ void AMapConstructor::PlacePlayerOnStartPosition(FIntPoint StartPosition)
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	FVector PlayerLocation = PlayerPawn->GetActorLocation();
-	PlayerLocation = GetGridPosition(StartPosition.X, StartPosition.Y);
+	PlayerLocation = MapDefaultsSubsytem->GetGridPosition(StartPosition.X, StartPosition.Y);
 	PlayerPawn->SetActorLocation(PlayerLocation);
 }

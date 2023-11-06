@@ -29,9 +29,6 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	float MoveDistance{ 100 };
-
-	UPROPERTY(EditAnywhere)
 	float MovementDuration{ 0.25f };
 
 	AActor* MyOwner;
@@ -39,4 +36,5 @@ private:
 	FVector CurrentLocation;
 	FVector TargetLocation;
 	float ElapsedDuration;
+	TObjectPtr<class UMapDefaultsSubSystem> MapDefaultsSubsystem;
 };

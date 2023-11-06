@@ -3,6 +3,7 @@
 
 #include "PawnMoverComponent.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "MapDefaultsSubSystem.h"
 
 // Sets default values for this component's properties
 UPawnMoverComponent::UPawnMoverComponent()
@@ -18,6 +19,7 @@ void UPawnMoverComponent::BeginPlay()
 	Super::BeginPlay();
 
 	MyOwner = GetOwner();
+	MapDefaultsSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UMapDefaultsSubSystem>();
 }
 
 // Called every frame
@@ -49,7 +51,7 @@ void UPawnMoverComponent::AttemptMove(FVector MoveDirection)
 	}
 
 	CurrentLocation = MyOwner->GetActorLocation();
-	TargetLocation = CurrentLocation + MoveDirection * MoveDistance;
+	TargetLocation = CurrentLocation + MoveDirection * MapDefaultsSubsystem->GetGridSnapValue();
 	ElapsedDuration = 0;
 	bIsMoving = true;
 }

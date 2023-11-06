@@ -6,24 +6,22 @@
 #include "GameFramework/Actor.h"
 #include "MapConstructor.generated.h"
 
-class UStaticMesh;
-class AStaticMeshActor;
-class AEnemyPawn;
-
-USTRUCT(BlueprintType)
-struct FStaticMeshActorArray
+USTRUCT()
+struct FMapCellData
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
-	TArray<AStaticMeshActor*> Array;
+	UPROPERTY()
+	FIntPoint Index{ -999, -999 };
 
-	AStaticMeshActor* operator[](size_t index)
-	{
-		return Array[index];
-	}
+	UPROPERTY()
+	bool bIsWalkable;
 };
+
+class UStaticMesh;
+class AStaticMeshActor;
+class AEnemyPawn;
 
 UCLASS()
 class PUZZLEQUEST_API AMapConstructor : public AActor
@@ -41,7 +39,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	FVector GetGridPosition(int X, int Y);
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -54,20 +51,20 @@ private:
 	TArray<FIntPoint> InitialEnemiesLocations;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AStaticMeshActor> WhiteFloorTile;
+	TSubclassOf<AStaticMeshActor> WhiteFloorTileBP;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AStaticMeshActor> BlackFloorTile;
+	TSubclassOf<AStaticMeshActor> BlackFloorTileBP;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AStaticMeshActor> WallTile;
+	TSubclassOf<AStaticMeshActor> WallTileBP;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AEnemyPawn> EnemyPawn;
+	TSubclassOf<AEnemyPawn> EnemyPawnBP;
 
-	const float GridSnapValue{ 100 };
+	TMap<FIntPoint, bool> MapData;
+	TObjectPtr<class UMapDefaultsSubSystem> MapDefaultsSubsytem;
 
-private:
 	void ConstructFloorGrid(FIntPoint MapSize);
 	void ConstructOuterWall(FIntPoint MapSize);
 	void SpawnEnemies(TArray<FIntPoint> EnemiesLocations);

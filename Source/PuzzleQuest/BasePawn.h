@@ -40,6 +40,7 @@ public:
 	virtual void Attack(UHealth* OtherHealth);
 	AActor* CheckCellOnDirection(FVector Direction);
 
+
 protected:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* BaseCollision;
@@ -66,11 +67,16 @@ protected:
 	float DelayBetweenAction{ 0.2f };
 
 	float TimeAfterLastAction;
+	FIntPoint CurrentGridLocation;
+	FIntPoint StartGridLocation;
 
 	bool CanAct();
 	FVector GetCheckDirection(FVector Direction, float Modifier = 1) const;
 
 public:
+	void SetupGridLocation(FIntPoint GridLocation);
+	FIntPoint GetGridLocation();
+
 	UFUNCTION()
 	void Die();
 };
