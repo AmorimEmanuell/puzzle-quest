@@ -50,15 +50,15 @@ private:
 	TArray<FPathFindingData> CurrentNeighbors;
 	FPathFindingData CurrentNeighbor;
 
+	void ClearData();
 	bool IsInputValid(FIntPoint Start, FIntPoint Target);
-	void DiscoverTile(FPathFindingData TileData);
 	int32 GetMinimumCostBetweenTiles(FIntPoint Index1, FIntPoint Index2);
+	void DiscoverTile(FPathFindingData TileData);
+	void InsertTileInDiscoveredArray(FPathFindingData TileData);
 	bool AnalyseNextDiscoveredTile();
-	TArray<FIntPoint> GeneratePath();
 	FPathFindingData GetCheapestTile();
 	void GetValidNeighbors(FIntPoint TileIndex);
 	void CreatePathFindingDataIfValid(FIntPoint TileIndex, FIntPoint PreviousIndex);
 	bool DiscoverNextNeighbor(FPathFindingData CurrentDiscoveredTile);
-	void InsertTileInDiscoveredArray(FPathFindingData TileData);
-	void ClearData();
+	TArray<FIntPoint> GeneratePath();
 };

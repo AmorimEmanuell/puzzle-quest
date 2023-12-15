@@ -3,6 +3,7 @@
 
 #include "PathFindingSubsystem.h"
 #include "MapDefaultsSubSystem.h"
+#include <Algo/Reverse.h>
 
 TArray<FIntPoint> UPathFindingSubsystem::FindPath(FIntPoint Start, FIntPoint Target)
 {
@@ -32,6 +33,15 @@ TArray<FIntPoint> UPathFindingSubsystem::FindPath(FIntPoint Start, FIntPoint Tar
 	return TArray<FIntPoint>();
 }
 
+void UPathFindingSubsystem::ClearData()
+{
+	PathFindingData.Reset();
+	DiscoveredTilesIndexes.Reset();
+	DiscoveredTilesSortingCosts.Reset();
+	AnalysedTilesIndexes.Reset();
+	CurrentNeighbors.Reset();
+}
+
 bool UPathFindingSubsystem::IsInputValid(FIntPoint Start, FIntPoint Target)
 {
 	if (Start == Target)
@@ -54,16 +64,46 @@ bool UPathFindingSubsystem::IsInputValid(FIntPoint Start, FIntPoint Target)
 	return true;
 }
 
+int32 UPathFindingSubsystem::GetMinimumCostBetweenTiles(FIntPoint Index1, FIntPoint Index2)
+{
+	FIntPoint Sub = Index1 - Index2;
+	return FMath::Abs(Sub.X) + FMath::Abs(Sub.Y);
+}
+
 void UPathFindingSubsystem::DiscoverTile(FPathFindingData TileData)
 {
 	PathFindingData.Add(TileData.Index, TileData);
 	InsertTileInDiscoveredArray(TileData);
 }
 
-int32 UPathFindingSubsystem::GetMinimumCostBetweenTiles(FIntPoint Index1, FIntPoint Index2)
+void UPathFindingSubsystem::InsertTileInDiscoveredArray(FPathFindingData TileData)
 {
-	FIntPoint Sub = Index1 - Index2;
-	return FMath::Abs(Sub.X) + FMath::Abs(Sub.Y);
+	int32 SortingCost = TileData.CostFromStart + TileData.MinimumCostToTarget;
+	if (DiscoveredTilesSortingCosts.Num() == 0)
+	{
+		DiscoveredTilesSortingCosts.Add(SortingCost);
+		DiscoveredTilesIndexes.Add(TileData.Index);
+	}
+	else
+	{
+		if (SortingCost >= DiscoveredTilesSortingCosts.Last())
+		{
+			DiscoveredTilesSortingCosts.Add(SortingCost);
+			DiscoveredTilesIndexes.Add(TileData.Index);
+		}
+		else
+		{
+			for (int32 i{ 0 }; i < DiscoveredTilesSortingCosts.Num(); i++)
+			{
+				if (DiscoveredTilesSortingCosts[i] >= SortingCost)
+				{
+					DiscoveredTilesSortingCosts.Insert(SortingCost, i);
+					DiscoveredTilesIndexes.Insert(TileData.Index, i);
+					break;
+				}
+			}
+		}
+	}
 }
 
 bool UPathFindingSubsystem::AnalyseNextDiscoveredTile()
@@ -80,27 +120,6 @@ bool UPathFindingSubsystem::AnalyseNextDiscoveredTile()
 	}
 
 	return false;
-}
-
-TArray<FIntPoint> UPathFindingSubsystem::GeneratePath()
-{
-	TArray<FIntPoint> InversedPath;
-	FIntPoint Current = TargetIndex;
-	while (Current != StartIndex)
-	{
-		InversedPath.Add(Current);
-
-		FPathFindingData TileData = PathFindingData[Current];
-		Current = TileData.PreviousIndex;
-	}
-
-	TArray<FIntPoint> FinalPath;
-	for (int32 i{ InversedPath.Num() - 1 }; i >= 0; i--)
-	{
-		FinalPath.Add(InversedPath[i]);
-	}
-
-	return FinalPath;
 }
 
 FPathFindingData UPathFindingSubsystem::GetCheapestTile()
@@ -171,41 +190,25 @@ bool UPathFindingSubsystem::DiscoverNextNeighbor(FPathFindingData CurrentDiscove
 	return CurrentNeighbor.Index == TargetIndex;
 }
 
-void UPathFindingSubsystem::InsertTileInDiscoveredArray(FPathFindingData TileData)
+TArray<FIntPoint> UPathFindingSubsystem::GeneratePath()
 {
-	int32 SortingCost = TileData.CostFromStart + TileData.MinimumCostToTarget;
-	if (DiscoveredTilesSortingCosts.Num() == 0)
+	TArray<FIntPoint> InversedPath;
+	FIntPoint Current = TargetIndex;
+	while (Current != StartIndex)
 	{
-		DiscoveredTilesSortingCosts.Add(SortingCost);
-		DiscoveredTilesIndexes.Add(TileData.Index);
-	}
-	else
-	{
-		if (SortingCost >= DiscoveredTilesSortingCosts.Last())
-		{
-			DiscoveredTilesSortingCosts.Add(SortingCost);
-			DiscoveredTilesIndexes.Add(TileData.Index);
-		}
-		else
-		{
-			for (int32 i{ 0 }; i < DiscoveredTilesSortingCosts.Num(); i++)
-			{
-				if (DiscoveredTilesSortingCosts[i] >= SortingCost)
-				{
-					DiscoveredTilesSortingCosts.Insert(SortingCost, i);
-					DiscoveredTilesIndexes.Insert(TileData.Index, i);
-					break;
-				}
-			}
-		}
-	}
-}
+		InversedPath.Add(Current);
 
-void UPathFindingSubsystem::ClearData()
-{
-	PathFindingData.Reset();
-	DiscoveredTilesIndexes.Reset();
-	DiscoveredTilesSortingCosts.Reset();
-	AnalysedTilesIndexes.Reset();
-	CurrentNeighbors.Reset();
+		FPathFindingData TileData = PathFindingData[Current];
+		Current = TileData.PreviousIndex;
+	}
+
+	Algo::Reverse(InversedPath);
+
+	/*TArray<FIntPoint> FinalPath;
+	for (int32 i{ InversedPath.Num() - 1 }; i >= 0; i--)
+	{
+		FinalPath.Add(InversedPath[i]);
+	}*/
+
+	return InversedPath;
 }
